@@ -1,6 +1,10 @@
-﻿using SQLite;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+using SQLite;
 using Examen1PMUCENM2.Models;
+using Microsoft.Maui.Storage;
 
 namespace Examen1PMUCENM2.Controllers
 {
@@ -10,43 +14,25 @@ namespace Examen1PMUCENM2.Controllers
 
         public EmpleadosController()
         {
-            string dbPath = Path.Combine(FileSystem.AppDataDirectory, "Empleados.db3");
+            string dbPath = Path.Combine(FileSystem.Current.AppDataDirectory, "Empleados.db3");
             _database = new SQLiteAsyncConnection(dbPath);
-
-            // Crear la tabla si no existe
             _database.CreateTableAsync<Empleados>().Wait();
         }
 
-        // ✅ Método para convertir imagen a Base64
-        public string ConvertirImagenABase64(Stream imageStream)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                imageStream.CopyTo(memoryStream);
-                byte[] imageBytes = memoryStream.ToArray();
-                return Convert.ToBase64String(imageBytes);
-            }
-        }
+        public Task<List<Empleados>> ObtenerEmpleados() =>
+            _database.Table<Empleados>().ToListAsync();
 
-        // ✅ Operaciones CRUD
-        public Task<int> AgregarEmpleadoAsync(Empleados empleado)
-        {
-            return _database.InsertAsync(empleado);
-        }
+        public Task<int> GuardarEmpleado(Empleados empleado) =>
+            _database.InsertAsync(empleado);
 
-        public Task<List<Empleados>> ObtenerEmpleadosAsync()
+        public async Task<string> ConvertirImagenABase64(FileResult foto)
         {
-            return _database.Table<Empleados>().ToListAsync();
-        }
+            if (foto == null) return string.Empty;
 
-        public Task<int> EliminarEmpleadoAsync(Empleados empleado)
-        {
-            return _database.DeleteAsync(empleado);
-        }
-
-        public Task<int> ActualizarEmpleadoAsync(Empleados empleado)
-        {
-            return _database.UpdateAsync(empleado);
+            using var stream = await foto.OpenReadAsync();
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            return Convert.ToBase64String(ms.ToArray());
         }
     }
 }
