@@ -34,5 +34,14 @@ namespace Examen1PMUCENM2.Controllers
             await stream.CopyToAsync(ms);
             return Convert.ToBase64String(ms.ToArray());
         }
+
+        public async Task<string> ConvertirImagenABase64(Stream stream)
+        {
+            if (stream == null) return string.Empty;
+
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            return Convert.ToBase64String(ms.ToArray());
+        }
     }
 }

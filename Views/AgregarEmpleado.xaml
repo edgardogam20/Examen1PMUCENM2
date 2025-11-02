@@ -13,13 +13,12 @@
             <Entry x:Name="correoEntry" Placeholder="Correo" />
 
             <Image x:Name="fotoPreview"
-                   WidthRequest="150"
-                   HeightRequest="150"
-                   BackgroundColor="LightGray"
-                   Aspect="AspectFill" />
+                   HeightRequest="200"
+                   Aspect="AspectFit"
+                   BackgroundColor="LightGray" />
 
-            <Button Text="Seleccionar Foto" Clicked="OnSeleccionarFoto" />
-            <Button Text="Guardar Empleado" Clicked="OnGuardarEmpleado" />
+            <Button Text="Tomar Foto" Clicked="OnTomarFoto" />
+            <Button x:Name="guardarButton" Text="Guardar Empleado" Clicked="OnGuardarEmpleado" IsEnabled="False" />
 
         </VerticalStackLayout>
     </ScrollView>

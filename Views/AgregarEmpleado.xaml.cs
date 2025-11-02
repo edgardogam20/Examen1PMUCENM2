@@ -8,7 +8,7 @@ namespace Examen1PMUCENM2.Views
     public partial class AgregarEmpleado : ContentPage
     {
         private readonly EmpleadosController _controller = new();
-        private FileResult _fotoSeleccionada;
+        private FileResult _fotoCapturada;
         private string _fotoBase64 = string.Empty;
 
         public AgregarEmpleado()
@@ -16,20 +16,46 @@ namespace Examen1PMUCENM2.Views
             InitializeComponent();
         }
 
-        private async void OnSeleccionarFoto(object sender, EventArgs e)
+        private async void OnTomarFoto(object sender, EventArgs e)
         {
             try
             {
-                _fotoSeleccionada = await MediaPicker.PickPhotoAsync();
-                if (_fotoSeleccionada != null)
+                var status = await Permissions.RequestAsync<Permissions.Camera>();
+                if (status != PermissionStatus.Granted)
                 {
-                    _fotoBase64 = await _controller.ConvertirImagenABase64(_fotoSeleccionada);
-                    fotoPreview.Source = ImageSource.FromStream(() => _fotoSeleccionada.OpenReadAsync().Result);
+                    await DisplayAlert("Permiso denegado", "No se puede acceder a la cámara.", "OK");
+                    return;
+                }
+
+                _fotoCapturada = await MediaPicker.CapturePhotoAsync();
+
+                if (_fotoCapturada != null)
+                {
+                    _fotoBase64 = await _controller.ConvertirImagenABase64(_fotoCapturada);
+                    using var stream = await _fotoCapturada.OpenReadAsync();
+                    fotoPreview.Source = ImageSource.FromStream(() => stream);
+                    guardarButton.IsEnabled = true; 
+                }
+                else
+                {
+                    await DisplayAlert("Cancelado", "No se capturó ninguna imagen.", "OK");
+                }
+            }
+            catch (FeatureNotSupportedException)
+            {
+                await DisplayAlert("No disponible", "Este dispositivo no soporta captura directa. Se abrirá la galería.", "OK");
+                _fotoCapturada = await MediaPicker.PickPhotoAsync();
+                if (_fotoCapturada != null)
+                {
+                    _fotoBase64 = await _controller.ConvertirImagenABase64(_fotoCapturada);
+                    using var stream = await _fotoCapturada.OpenReadAsync();
+                    fotoPreview.Source = ImageSource.FromStream(() => stream);
+                    guardarButton.IsEnabled = true;
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"No se pudo seleccionar la foto: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"Ocurrió un problema: {ex.Message}", "OK");
             }
         }
 
