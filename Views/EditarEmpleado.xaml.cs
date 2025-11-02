@@ -5,17 +5,38 @@ using Examen1PMUCENM2.Models;
 
 namespace Examen1PMUCENM2.Views
 {
-    public partial class AgregarEmpleado : ContentPage
+    [QueryProperty(nameof(EmpleadoId), "Id")]
+    public partial class EditarEmpleado : ContentPage
     {
         private readonly EmpleadosController _controller = new();
         private string _fotoBase64 = string.Empty;
+        public int EmpleadoId { get; set; }
 
-        public AgregarEmpleado()
+        public EditarEmpleado()
         {
             InitializeComponent();
         }
 
-        private async void OnTomarFoto(object sender, EventArgs e)
+        protected override async void OnAppearing()
+        {
+            var empleado = await _controller.ObtenerEmpleadoPorId(EmpleadoId);
+            if (empleado != null)
+            {
+                nombreEntry.Text = empleado.Nombre;
+                puestoEntry.Text = empleado.Puesto;
+                correoEntry.Text = empleado.Correo;
+                fechaPicker.Date = empleado.FechaIngreso;
+                _fotoBase64 = empleado.Foto;
+
+                if (!string.IsNullOrEmpty(_fotoBase64))
+                {
+                    fotoPreview.Source = ImageSource.FromStream(() =>
+                        new MemoryStream(Convert.FromBase64String(_fotoBase64)));
+                }
+            }
+        }
+
+        private async void OnCambiarFoto(object sender, EventArgs e)
         {
             try
             {
@@ -30,43 +51,26 @@ namespace Examen1PMUCENM2.Views
                 if (foto != null)
                 {
                     var originalStream = await foto.OpenReadAsync();
-
-                    // Copiar el contenido a un array de bytes
                     using var memoryStream = new MemoryStream();
                     await originalStream.CopyToAsync(memoryStream);
                     var imagenBytes = memoryStream.ToArray();
 
-                    // Convertir a Base64
                     _fotoBase64 = Convert.ToBase64String(imagenBytes);
-
-                    // Mostrar imagen usando un nuevo stream
                     fotoPreview.Source = ImageSource.FromStream(() => new MemoryStream(imagenBytes));
-
-                    guardarButton.IsEnabled = true;
-                }
-                else
-                {
-                    await DisplayAlert("Cancelado", "No se capturó ninguna imagen.", "OK");
                 }
             }
             catch (FeatureNotSupportedException)
             {
-                await DisplayAlert("No disponible", "Este dispositivo no soporta captura directa. Se abrirá la galería.", "OK");
-
                 var foto = await MediaPicker.PickPhotoAsync();
                 if (foto != null)
                 {
                     var originalStream = await foto.OpenReadAsync();
-
                     using var memoryStream = new MemoryStream();
                     await originalStream.CopyToAsync(memoryStream);
                     var imagenBytes = memoryStream.ToArray();
 
                     _fotoBase64 = Convert.ToBase64String(imagenBytes);
-
                     fotoPreview.Source = ImageSource.FromStream(() => new MemoryStream(imagenBytes));
-
-                    guardarButton.IsEnabled = true;
                 }
             }
             catch (Exception ex)
@@ -75,45 +79,29 @@ namespace Examen1PMUCENM2.Views
             }
         }
 
-        private async void OnGuardarEmpleado(object sender, EventArgs e)
+        private async void OnActualizarEmpleado(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(nombreEntry.Text) ||
                 string.IsNullOrWhiteSpace(puestoEntry.Text) ||
-                string.IsNullOrWhiteSpace(correoEntry.Text) ||
-                string.IsNullOrWhiteSpace(_fotoBase64))
+                string.IsNullOrWhiteSpace(correoEntry.Text))
             {
-                await DisplayAlert("Validación", "Todos los campos son obligatorios, incluyendo la foto.", "OK");
+                await DisplayAlert("Validación", "Todos los campos son obligatorios.", "OK");
                 return;
             }
 
             var empleado = new Empleados
             {
+                Id = EmpleadoId,
                 Nombre = nombreEntry.Text,
-                FechaIngreso = fechaPicker.Date,
                 Puesto = puestoEntry.Text,
                 Correo = correoEntry.Text,
+                FechaIngreso = fechaPicker.Date,
                 Foto = _fotoBase64
             };
 
-            try
-            {
-                await _controller.GuardarEmpleado(empleado);
-                await DisplayAlert("Éxito", "Empleado guardado correctamente.", "OK");
-
-                // Limpiar formulario
-                nombreEntry.Text = string.Empty;
-                puestoEntry.Text = string.Empty;
-                correoEntry.Text = string.Empty;
-                fotoPreview.Source = null;
-                _fotoBase64 = string.Empty;
-                guardarButton.IsEnabled = false;
-
-                await Shell.Current.GoToAsync("//ListaEmpleados");
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Error", $"No se pudo guardar el empleado: {ex.Message}", "OK");
-            }
+            await _controller.ActualizarEmpleado(empleado);
+            await DisplayAlert("Éxito", "Empleado actualizado correctamente.", "OK");
+            await Shell.Current.GoToAsync("//ListaEmpleados");
         }
     }
 }

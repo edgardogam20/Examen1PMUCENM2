@@ -73,6 +73,9 @@
 	  <MauiXaml Update="Views\AgregarEmpleado.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\EditarEmpleado.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\ListaEmpleados.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

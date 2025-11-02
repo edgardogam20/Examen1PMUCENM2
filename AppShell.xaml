@@ -8,6 +8,7 @@
     <ShellItem Title="Empleados" Route="Main">
         <ShellContent Title="Lista" ContentTemplate="{DataTemplate views:ListaEmpleados}" Route="ListaEmpleados" />
         <ShellContent Title="Agregar" ContentTemplate="{DataTemplate views:AgregarEmpleado}" Route="AgregarEmpleado" />
+        <ShellContent Route="EditarEmpleadoPage" ContentTemplate="{DataTemplate views:EditarEmpleado}" />
     </ShellItem>
 
 </Shell>

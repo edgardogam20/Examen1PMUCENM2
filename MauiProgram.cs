@@ -15,7 +15,7 @@ namespace Examen1PMUCENM2
 
             builder
                 .UseMauiApp<App>() // 👈 Este debe ir primero
-                .UseMauiCommunityToolkitMediaElement() // 👈 Este debe ir justo después si lo usas
+                .UseMauiCommunityToolkitMediaElement() // 👈 Este debe ir justo después
                 .UseMauiCommunityToolkit() // 👈 Este puede ir después
                 .ConfigureFonts(fonts =>
                 {
