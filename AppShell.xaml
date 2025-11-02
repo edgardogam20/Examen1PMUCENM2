@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:Examen1PMUCENM2.Views"
+    x:Class="Examen1PMUCENM2.AppShell">
+
+    <ShellItem Title="Empleados" Route="Main">
+        <ShellContent Title="Lista" ContentTemplate="{DataTemplate views:ListaEmpleados}" Route="ListaEmpleados" />
+        <ShellContent Title="Agregar" ContentTemplate="{DataTemplate views:AgregarEmpleado}" Route="AgregarEmpleado" />
+    </ShellItem>
+
+</Shell>
