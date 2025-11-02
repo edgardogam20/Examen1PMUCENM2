@@ -1,12 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
+using SQLitePCL;
 
 namespace Examen1PMUCENM2
 {
     public static class MauiProgram
     {
+
         public static MauiApp CreateMauiApp()
         {
+            SQLitePCL.Batteries.Init();
+            SQLitePCL.Batteries_V2.Init();
             var builder = MauiApp.CreateBuilder();
 
             builder
