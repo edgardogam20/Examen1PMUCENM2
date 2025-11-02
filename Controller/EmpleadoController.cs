@@ -19,15 +19,15 @@ namespace Examen1PMUCENM2.Controllers
             _database.CreateTableAsync<Empleados>().Wait();
         }
 
-        // ✅ Obtener todos los empleados
+        //Obtener empleados
         public Task<List<Empleados>> ObtenerEmpleados() =>
             _database.Table<Empleados>().ToListAsync();
 
-        // ✅ Guardar nuevo empleado
+        // Guardar empleado
         public Task<int> GuardarEmpleado(Empleados empleado) =>
             _database.InsertAsync(empleado);
 
-        // ✅ Obtener empleado por ID (para editar)
+     
         public async Task<Empleados> ObtenerEmpleadoPorId(int id)
         {
             return await _database.Table<Empleados>()
@@ -35,13 +35,13 @@ namespace Examen1PMUCENM2.Controllers
                                   .FirstOrDefaultAsync();
         }
 
-        // ✅ Actualizar empleado existente
+        // Actualizar empleado existente
         public async Task<int> ActualizarEmpleado(Empleados empleado)
         {
             return await _database.UpdateAsync(empleado);
         }
 
-        // ✅ Eliminar empleado por ID
+        // Eliminar empleado por ID
         public async Task<int> EliminarEmpleado(int id)
         {
             var empleado = await ObtenerEmpleadoPorId(id);
@@ -52,7 +52,7 @@ namespace Examen1PMUCENM2.Controllers
             return 0;
         }
 
-        // ✅ Convertir imagen a Base64 desde FileResult
+        // Convertir imagen a Base64 
         public async Task<string> ConvertirImagenABase64(FileResult foto)
         {
             if (foto == null) return string.Empty;
@@ -63,7 +63,7 @@ namespace Examen1PMUCENM2.Controllers
             return Convert.ToBase64String(ms.ToArray());
         }
 
-        // ✅ Convertir imagen a Base64 desde Stream
+        //Convertir imagen a Base64 desde Stream
         public async Task<string> ConvertirImagenABase64(Stream stream)
         {
             if (stream == null) return string.Empty;

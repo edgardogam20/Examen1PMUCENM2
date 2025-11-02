@@ -16,7 +16,7 @@ namespace Examen1PMUCENM2.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            CargarEmpleados(); // se ejecuta cada vez que vuelves a la lista
+            CargarEmpleados(); 
         }
         private async void CargarEmpleados()
         {

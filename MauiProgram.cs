@@ -14,9 +14,9 @@ namespace Examen1PMUCENM2
             var builder = MauiApp.CreateBuilder();
 
             builder
-                .UseMauiApp<App>() // 👈 Este debe ir primero
-                .UseMauiCommunityToolkitMediaElement() // 👈 Este debe ir justo después
-                .UseMauiCommunityToolkit() // 👈 Este puede ir después
+                .UseMauiApp<App>() // Este debe ir primero
+                .UseMauiCommunityToolkitMediaElement() //  Este debe ir justo después
+                .UseMauiCommunityToolkit() //Este puede ir después
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
